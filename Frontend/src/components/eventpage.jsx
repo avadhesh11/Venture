@@ -214,7 +214,7 @@ const OverviewTab = ({ event, role, admins, managers, clubid, eventId, setShowIm
               Quick Links
             </h3>
             <div className="space-y-3">
-              <Link to={`/events/${clubid}/${eventId}/bracket`} className="w-full group relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-indigo-500/50 p-4 transition-all duration-300 hover:scale-105 block">
+              {/* <Link to={`/events/${clubid}/${eventId}/bracket`} className="w-full group relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-indigo-500/50 p-4 transition-all duration-300 hover:scale-105 block">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-10 transition-opacity"></div>
                 <div className="relative flex items-center justify-between">
                   <span className="font-medium text-slate-200 group-hover:text-white transition-colors flex items-center gap-3">
@@ -223,7 +223,7 @@ const OverviewTab = ({ event, role, admins, managers, clubid, eventId, setShowIm
                   </span>
                   <i className="fa-solid fa-arrow-right text-slate-600 group-hover:text-indigo-400 transition-all group-hover:translate-x-1"></i>
                 </div>
-              </Link>
+              </Link> */}
               <Link to={`/events/${clubid}/${eventId}/matches`} className="w-full group relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-indigo-500/50 p-4 transition-all duration-300 hover:scale-105 block">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity"></div>
                 <div className="relative flex items-center justify-between">

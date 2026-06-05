@@ -38,6 +38,11 @@ const stageSchema = new mongoose.Schema(
         ref: "Match"
       }
     ],
+    scheduleid:{
+   type:mongoose.Schema.Types.ObjectId,
+   ref:"Schedule",
+   required:true
+},
 
     status: {
       type: String,

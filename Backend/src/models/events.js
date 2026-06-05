@@ -5,6 +5,7 @@ const eventSchema=new mongoose.Schema({
       description:{type:String},
   admin:[{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true}],
   managers:[{type:mongoose.Schema.Types.ObjectId,ref:"User",default:[]}],
+schedules:[{type:mongoose.Schema.Types.ObjectId,ref:"Schedule"}],
 users:[{type:mongoose.Schema.Types.ObjectId,ref:"User",required:true}],
   club:{type:mongoose.Schema.Types.ObjectId,ref:"Club",required:true},
 teamsBy:{type:String,default:"users"},

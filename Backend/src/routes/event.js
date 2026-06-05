@@ -11,6 +11,7 @@ import {checkadmin,checkmanager} from "../middlewares/roles.js";
 import QueryMessage from "../models/QueryMessage.js";
 import Stage from "../models/stages.js";
 import { emitMatchEvent } from "../utils/emitMatchUpdate.js";
+import schedule from "../models/schedule.js";
 
 // Utility: shuffle array (Fisher-Yates)
 const shuffleArray = (arr) => {
@@ -242,15 +243,17 @@ const {eventid,title,date,time,location,description}=req.body;
 if(!eventid || !title || !date || !time || !location ) return res.status(400).json({ message: "Missing fields" });
 const event=await Event.findById(eventid);
  if (!event) return res.status(404).json({ message: "Event not found" });
-event.schedule.push({
-   _id: new mongoose.Types.ObjectId(), title,date,time,location,description
-});
+ const sched=await schedule.create({
+  eventid,title,date,time,location,description
+ });
+await sched.save();
+event.schedules.push(sched._id);
 await event.save();
 return res.status(200).json({
     message:`New schedule for ${event.name} created `
 });
     } catch (error) {
-    console.error(err);
+    console.error(error);
     res.status(500).json({ message: "Server error" });
     }
 
@@ -266,8 +269,8 @@ const event=await Event.findById(eventid);
  if (!event)
       return res.status(404).json({ message: "Event not found" });
 
-  if (event.players.map(id => id.toString()).includes(playerid)) return res.status(400).json({message:"player already in event"});
-event.players.push(playerid);
+  if (event.users.map(id => id.toString()).includes(playerid)) return res.status(400).json({message:"player already in event"});
+event.users.push(playerid);
 await event.save();
 user.events.push(eventid);
 await user.save();
@@ -281,28 +284,73 @@ return res.status(200).json({message:"player added"});
 });
 
 
-router.post("/match/create",authenticate,checkmanager, async (req, res) => {
-  const { eventid, teamA, teamB, scheduleid,time} = req.body;
-  const event = await Event.findById(eventid);
-if (!event) return res.status(404).json({ message: "Event not found" });
+router.post(
+ "/match/create",
+ authenticate,
+ checkmanager,
+ async(req,res)=>{
+  try{
 
-const teamIds = event.teams.map(id => id.toString());
-if (!teamIds.includes(teamA.toString()) || !teamIds.includes(teamB.toString()))
-  return res.status(400).json({ message: "Teams not part of event" });
+    const {
+      eventid,
+      scheduleid,
+      stageid,
+      teamA,
+      teamB,
+      slotIndex,
+      matchType
+    } = req.body;
 
+    const event = await Event.findById(eventid);
 
-const schedule = event.schedule.id(scheduleid);
-if (!schedule) return res.status(400).json({ message: "Schedule not part of event" });
-  const match = await Match.create({
-    eventid,
-    scheduleid,
-    teamA: { teamId: teamA },
-    teamB: { teamId: teamB },
-    time
-  });
+    if(!event){
+      return res.status(404).json({
+        message:"Event not found"
+      });
+    }
 
+    const stage = await Stage.findById(stageid);
 
-  res.json({ message: "Match created", match });
+    if(!stage){
+      return res.status(404).json({
+        message:"Stage not found"
+      });
+    }
+
+    const match = await Match.create({
+      eventid,
+      scheduleid,
+      stageid,
+
+      slotIndex,
+
+      matchType,
+
+      teamA:{
+        teamId:teamA
+      },
+
+      teamB:{
+        teamId:teamB
+      }
+    });
+
+    stage.matches.push(match._id);
+
+    await stage.save();
+
+    return res.status(201).json({
+      message:"Match created",
+      match
+    });
+
+  }catch(err){
+    console.error(err);
+
+    return res.status(500).json({
+      message:"Server error"
+    });
+  }
 });
 
 

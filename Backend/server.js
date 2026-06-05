@@ -14,7 +14,7 @@ import event from "./src/routes/event.js";
 import teams from "./src/routes/team.js";
 import schedule from "./src/routes/schedule.js";
 import extra from "./src/routes/extra.js";
-
+import match from "./src/routes/match.js";
 dotenv.config();
 
 const app = express();
@@ -82,7 +82,7 @@ app.use("/events", event);
 app.use("/teams", teams);
 app.use("/schedule", schedule);
 app.use("/notifications", notifications);
-
+app.use("/match",match);
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
@@ -91,6 +91,10 @@ app.get("/health", (req, res) => {
 setupSocket(io);
 
 /* ================= SERVER START ================= */
-httpServer.listen(PORT, "0.0.0.0", () => {
+// httpServer.listen(PORT, "0.0.0.0", () => {
+//   console.log("🚀 Server running on:", PORT);
+// });
+
+app.listen(PORT,()=>{
   console.log("🚀 Server running on:", PORT);
-});
+})

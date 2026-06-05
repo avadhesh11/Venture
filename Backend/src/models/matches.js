@@ -20,7 +20,7 @@ const matchSchema = new mongoose.Schema({
 
   matchType: {
     type: String,
-    enum: ["KNOCKOUT", "LEAGUE"],
+    
     required: true,
   },
 
